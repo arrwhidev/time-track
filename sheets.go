@@ -14,7 +14,6 @@ type SheetsService struct {
 }
 
 func NewSheetsService(config Config) *SheetsService {
-	spreadsheetId := config.spreadsheetId
 	conf := &jwt.Config{
 		Email:        config.email,
 		PrivateKey:   []byte(config.privateKey),
@@ -31,5 +30,5 @@ func NewSheetsService(config Config) *SheetsService {
 		log.Fatal(err)
 	}
 
-	return &SheetsService{service, spreadsheetId}
+	return &SheetsService{service, config.spreadsheetId}
 }
