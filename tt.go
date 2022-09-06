@@ -24,8 +24,7 @@ func main() {
 
 					return nil
 				},
-			},
-			{
+			}, {
 				Name:  "add",
 				Usage: "Add time",
 				Action: func(cCtx *cli.Context) error {
@@ -35,6 +34,20 @@ func main() {
 						log.Fatal(err)
 					}
 					Add(category, time)
+
+					return nil
+				},
+			},
+			{
+				Name:  "sync",
+				Usage: "Sync to Google Sheet",
+				Action: func(cCtx *cli.Context) error {
+					config := loadConfig()
+					ss := NewSheetsService(*config)
+					if ss == nil {
+						log.Fatal("Failed to create sheets service")
+					}
+					ss.Sync(readToday())
 
 					return nil
 				},

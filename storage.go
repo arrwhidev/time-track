@@ -29,8 +29,12 @@ func Set(key string, value int) {
 	writeToday(data)
 }
 
+func today() string {
+	return time.Now().Format("01-02-2006")
+}
+
 func todayPath() string {
-	return "/tmp/tt/" + time.Now().Format("01-02-2006")
+	return "/tmp/tt/" + today()
 }
 
 func touchToday() {

@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	spreadsheetId string `json:spreadsheetId`
-	email         string `json:email`
-	privateKey    string `json:privateKey`
-	privateKeyId  string `json:privateKeyId`
+	SpreadsheetId string   `json:spreadsheetId`
+	Email         string   `json:email`
+	PrivateKey    string   `json:privateKey`
+	PrivateKeyId  string   `json:privateKeyId`
+	Mappings      []string `json:mappings`
 }
 
 func loadConfig() *Config {
@@ -21,7 +22,11 @@ func loadConfig() *Config {
 	}
 	defer configFile.Close()
 
-	bytes, _ := ioutil.ReadAll(configFile)
+	bytes, err := ioutil.ReadAll(configFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var config Config
 	err = json.Unmarshal(bytes, &config)
 	if err != nil {
