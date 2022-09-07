@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -41,12 +42,16 @@ func main() {
 				Name:  "sync",
 				Usage: "Sync to Google Sheet",
 				Action: func(cCtx *cli.Context) error {
-					config := loadConfig()
-					ss := NewSheetsService(*config)
-					if ss == nil {
-						log.Fatal("Failed to create sheets service")
+					if isDirty() {
+						config := loadConfig()
+						ss := NewSheetsService(*config)
+						if ss == nil {
+							log.Fatal("Failed to create sheets service")
+						}
+						ss.Sync(readToday())
+					} else {
+						fmt.Println("Already up to date!")
 					}
-					ss.Sync(readToday())
 
 					return nil
 				},
