@@ -42,7 +42,7 @@ func main() {
 				Name:  "sync",
 				Usage: "Sync to Google Sheet",
 				Action: func(cCtx *cli.Context) error {
-					if isDirty() {
+					if isDataFileDirty() {
 						config := loadConfig()
 						ss := NewSheetsService(*config)
 						if ss == nil {

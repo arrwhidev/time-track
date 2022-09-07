@@ -29,48 +29,12 @@ func Set(key string, value int) {
 	writeToday(data)
 }
 
-func GetLastSyncTime() time.Time {
-	ensureLastSyncExists()
-
-	bytes, err := ioutil.ReadFile(lastSyncPath())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var lastSync time.Time
-	err = lastSync.UnmarshalText(bytes)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return lastSync
-}
-
-func UpdateLastSync() {
-	ensureLastSyncExists()
-
-	now := time.Now()
-	bytes, err := now.MarshalText()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = ioutil.WriteFile(lastSyncPath(), bytes, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func today() string {
 	return time.Now().Format("01-02-2006")
 }
 
 func todayDataFilePath() string {
 	return "/tmp/tt/" + today()
-}
-
-func lastSyncPath() string {
-	return "/tmp/tt/.last_sync"
 }
 
 func createFile(path string, initialValue string) {
@@ -126,14 +90,7 @@ func ensureTodayExists() {
 	}
 }
 
-func ensureLastSyncExists() {
-	_, err := os.Stat(lastSyncPath())
-	if os.IsNotExist(err) {
-		createFile(lastSyncPath(), "")
-	}
-}
-
-func isDirty() bool {
+func isDataFileDirty() bool {
 	dataFileInfo, err := os.Stat(todayDataFilePath())
 	if err != nil {
 		log.Fatal(err)
