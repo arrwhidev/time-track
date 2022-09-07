@@ -29,26 +29,62 @@ func Set(key string, value int) {
 	writeToday(data)
 }
 
+func GetLastSyncTime() time.Time {
+	ensureLastSyncExists()
+
+	bytes, err := ioutil.ReadFile(lastSyncPath())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var lastSync time.Time
+	err = lastSync.UnmarshalText(bytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return lastSync
+}
+
+func UpdateLastSync() {
+	ensureLastSyncExists()
+
+	now := time.Now()
+	bytes, err := now.MarshalText()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ioutil.WriteFile(lastSyncPath(), bytes, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func today() string {
 	return time.Now().Format("01-02-2006")
 }
 
-func todayPath() string {
+func todayDataFilePath() string {
 	return "/tmp/tt/" + today()
 }
 
-func touchToday() {
+func lastSyncPath() string {
+	return "/tmp/tt/.last_sync"
+}
+
+func createFile(path string, initialValue string) {
 	err := os.MkdirAll("/tmp/tt/", os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	file, err := os.Create(todayPath())
+	file, err := os.Create(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = file.WriteString("{}")
+	_, err = file.WriteString(initialValue)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,13 +93,13 @@ func touchToday() {
 }
 
 func readToday() map[string]int {
-	byteValue, err := ioutil.ReadFile(todayPath())
+	bytes, err := ioutil.ReadFile(todayDataFilePath())
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var result map[string]int
-	err = json.Unmarshal(byteValue, &result)
+	err = json.Unmarshal(bytes, &result)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,15 +113,32 @@ func writeToday(data map[string]int) {
 		log.Fatal(err)
 	}
 
-	err = ioutil.WriteFile(todayPath(), byteValue, 0644)
+	err = ioutil.WriteFile(todayDataFilePath(), byteValue, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
 func ensureTodayExists() {
-	_, err := os.Stat(todayPath())
-	if !os.IsNotExist(err) {
-		touchToday()
+	_, err := os.Stat(todayDataFilePath())
+	if os.IsNotExist(err) {
+		createFile(todayDataFilePath(), "{}")
 	}
+}
+
+func ensureLastSyncExists() {
+	_, err := os.Stat(lastSyncPath())
+	if os.IsNotExist(err) {
+		createFile(lastSyncPath(), "")
+	}
+}
+
+func isDirty() bool {
+	dataFileInfo, err := os.Stat(todayDataFilePath())
+	if err != nil {
+		log.Fatal(err)
+	}
+	dataFileModTime := dataFileInfo.ModTime()
+	lastSyncTime := GetLastSyncTime()
+	return dataFileModTime.After(lastSyncTime)
 }

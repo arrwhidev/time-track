@@ -37,6 +37,8 @@ func (ss *SheetsService) Sync(data map[string]int) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	UpdateLastSync()
 }
 
 func NewSheetsService(config Config) *SheetsService {

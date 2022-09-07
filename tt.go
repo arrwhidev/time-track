@@ -37,8 +37,7 @@ func main() {
 
 					return nil
 				},
-			},
-			{
+			}, {
 				Name:  "sync",
 				Usage: "Sync to Google Sheet",
 				Action: func(cCtx *cli.Context) error {
