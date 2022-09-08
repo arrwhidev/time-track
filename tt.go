@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -21,7 +22,9 @@ func main() {
 					if err != nil {
 						log.Fatal(err)
 					}
-					Set(category, time)
+
+					dataFile := GetDataFile()
+					dataFile.Set(category, time)
 
 					return nil
 				},
@@ -34,7 +37,9 @@ func main() {
 					if err != nil {
 						log.Fatal(err)
 					}
-					Add(category, time)
+
+					dataFile := GetDataFile()
+					dataFile.Add(category, time)
 
 					return nil
 				},
@@ -42,13 +47,19 @@ func main() {
 				Name:  "sync",
 				Usage: "Sync to Google Sheet",
 				Action: func(cCtx *cli.Context) error {
-					if isDataFileDirty() {
-						config := loadConfig()
-						ss := NewSheetsService(*config)
+					appConfig := GetAppConfig()
+					dataFile := GetDataFile()
+
+					if dataFile.IsDirty(*appConfig.Data()) {
+						userConfig := GetUserConfig()
+						ss := NewSheetsService(*userConfig)
 						if ss == nil {
 							log.Fatal("Failed to create sheets service")
 						}
-						ss.Sync(readToday())
+						ss.Sync(*dataFile.Data())
+
+						appConfig.Data().LastSync = time.Now()
+						appConfig.Write()
 					} else {
 						fmt.Println("Already up to date!")
 					}

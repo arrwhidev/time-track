@@ -10,17 +10,18 @@ import (
 
 type SheetsService struct {
 	srv    *sheets.Service
-	config Config
+	config UserConfigWrapper
 }
 
 func (ss *SheetsService) Sync(data map[string]int) {
-	numMappings := len(ss.config.Mappings)
+	config := ss.config.Data()
+	numMappings := len(config.Mappings)
 	rangeData := "Sheet1!A:" + string('A'+numMappings)
 	values := [][]interface{}{
 		{today()},
 	}
 
-	for _, k := range ss.config.Mappings {
+	for _, k := range config.Mappings {
 		if val, ok := data[k]; ok {
 			values[0] = append(values[0], val)
 		} else {
@@ -33,19 +34,18 @@ func (ss *SheetsService) Sync(data map[string]int) {
 		Values: values,
 	}
 
-	_, err := ss.srv.Spreadsheets.Values.Append(ss.config.SpreadsheetId, rangeData, valueRange).ValueInputOption("USER_ENTERED").Do()
+	_, err := ss.srv.Spreadsheets.Values.Append(config.SpreadsheetId, rangeData, valueRange).ValueInputOption("USER_ENTERED").Do()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	UpdateLastSync()
 }
 
-func NewSheetsService(config Config) *SheetsService {
+func NewSheetsService(config UserConfigWrapper) *SheetsService {
+	data := config.Data()
 	conf := &jwt.Config{
-		Email:        config.Email,
-		PrivateKey:   []byte(config.PrivateKey),
-		PrivateKeyID: config.PrivateKeyId,
+		Email:        data.Email,
+		PrivateKey:   []byte(data.PrivateKey),
+		PrivateKeyID: data.PrivateKeyId,
 		TokenURL:     "https://oauth2.googleapis.com/token",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/spreadsheets",
