@@ -1,13 +1,16 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	appConfigFilename = ".config.json"
 )
 
 type AppConfig struct {
-	LastSync time.Time `json:lastSync`
+	LastSync  time.Time `json:lastSync`
+	RowNumber int       `json:rowNumber`
 }
 
 type AppConfigWrapper struct {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -56,8 +55,6 @@ func (f *JsonFile[T]) ModTime() time.Time {
 }
 
 func createFile(path string, initialValue string) {
-	fmt.Println("Creating", path, "with initial value of", initialValue)
-
 	err := os.MkdirAll("/tmp/tt/", os.ModePerm) // TODO: grab the path from `path`
 	if err != nil {
 		log.Fatal(err)

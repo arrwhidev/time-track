@@ -56,7 +56,7 @@ func main() {
 						if ss == nil {
 							log.Fatal("Failed to create sheets service")
 						}
-						ss.Sync(*dataFile.Data())
+						ss.Sync(*dataFile.Data(), *appConfig)
 
 						appConfig.Data().LastSync = time.Now()
 						appConfig.Write()
