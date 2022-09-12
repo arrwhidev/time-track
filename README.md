@@ -1,6 +1,6 @@
 # Time Track
 
-Command line tool for time tracking.
+Command line tool for time tracking backed by Google Sheets.
 
 ## Setup
 
@@ -28,7 +28,7 @@ Manually create `/tmp/tt/config.json`
 }
 ```
 
-## Usage
+## Usage
 
 - **Add time** `tt add admin 20m` -- Add `20` minutes to the value of `admin`
 - **Add time** `tt add admin 1h` -- Add `1` hour to the value of `admin`
