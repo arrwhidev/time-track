@@ -45,11 +45,14 @@ func main() {
 			}, {
 				Name:  "sync",
 				Usage: "Sync to Google Sheet",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{Name: "force", Aliases: []string{"F"}},
+				},
 				Action: func(cCtx *cli.Context) error {
 					appConfig := GetAppConfig()
 					dataFile := GetDataFile()
 
-					if dataFile.IsDirty(*appConfig.Data()) {
+					if dataFile.IsDirty(*appConfig.Data()) || cCtx.Bool("force") {
 						userConfig := GetUserConfig()
 						ss := NewSheetsService(*userConfig)
 						if ss == nil {

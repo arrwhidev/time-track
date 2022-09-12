@@ -31,8 +31,9 @@ Manually create `/tmp/tt/config.json`
 ## Google Sheet Configuration
 
 - The sheeet should be named `Sheet1`
-- Row `1` should contain the headings, these should match the values in the JSON configuration file `mappings` attribute.
-- Column `A` is used for the date, you can name the heading anything.
+- Column `A` is reserved for the date, cell `A1` is the heading for the date -- you can name it anything.
+- Row `1` should contain the headings, starting from cell `B1`, these should match the values in the JSON configuration file `mappings` attribute.g
+
 
 ## Usage
 
@@ -40,6 +41,7 @@ Manually create `/tmp/tt/config.json`
 - **Add time** `tt add admin 1h` -- Add `1` hour to the value of `admin`
 - **Set time** `tt set admin 45m` -- Set the value for `admin` to `45` minutes
 - **Sync** `tt sync` -- Sync today's data to your Google Sheet
+- **Sync** `tt sync -F` -- Force Sync today's data to your Google Sheet
 
 ## Future Improvements
 
