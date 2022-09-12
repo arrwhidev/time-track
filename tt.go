@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/urfave/cli/v2"
@@ -18,7 +17,7 @@ func main() {
 				Usage: "Set time",
 				Action: func(cCtx *cli.Context) error {
 					category := cCtx.Args().First()
-					time, err := strconv.Atoi(cCtx.Args().Get(1))
+					time, err := ParseInputToMinutes(cCtx.Args().Get(1))
 					if err != nil {
 						log.Fatal(err)
 					}
@@ -33,7 +32,7 @@ func main() {
 				Usage: "Add time",
 				Action: func(cCtx *cli.Context) error {
 					category := cCtx.Args().First()
-					time, err := strconv.Atoi(cCtx.Args().Get(1))
+					time, err := ParseInputToMinutes(cCtx.Args().Get(1))
 					if err != nil {
 						log.Fatal(err)
 					}
