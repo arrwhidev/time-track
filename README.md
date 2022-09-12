@@ -28,6 +28,12 @@ Manually create `/tmp/tt/config.json`
 }
 ```
 
+## Google Sheet Configuration
+
+- The sheeet should be named `Sheet1`
+- Row `1` should contain the headings, these should match the values in the JSON configuration file `mappings` attribute.
+- Column `A` is used for the date, you can name the heading anything.
+
 ## Usage
 
 - **Add time** `tt add admin 20m` -- Add `20` minutes to the value of `admin`
